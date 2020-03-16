@@ -2,10 +2,9 @@
 title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
+  - php
   - shell
-  - ruby
-  - python
-  - javascript
+
 
 toc_footers:
   - <a href='#'>Sign Up for a Developer Key</a>
@@ -19,40 +18,69 @@ search: true
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+The Golfana Golf Course DB API is organized around REST. Our API has predictable, resource-oriented URLs,
+accepts form-encoded request bodies, returns JSON-encoded responses and uses standard HTTP response codes, 
+authentication and verbs.
 
-We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+You can view code examples in the dark area to the right and you can switch the programming language of 
+the examples with the tabs in the top right.
 
-This example API documentation page was created with [Slate](https://github.com/lord/slate). Feel free to edit it and use it as a base for your own API's documentation.
+The Golfana Golf Course DB API can be used in test or in live mode. The access token you use to authenticate 
+the request determines whether the request is test mode or live mode.
+
+This API documentation page was created with [Slate](https://github.com/lord/slate) and heavily inspired by [Stripe's API documentation](https://stripe.com/docs/api).
+
+# HTTP Clients
+
+Our examples use the follwoging HTTP clients:
+
+## PHP 
+
+```php
+<?php
+# We use GuzzleHttp in all our examples.
+$client = new \GuzzleHttp\Client(
+    [
+        'http_errors'   => false,   # Do not throw exceptions when receiving protocol errors. 
+        'base_uri'      => 'https://api.golfana.local:444/golfcoursedb/v1/' # Note the forward slash at the end
+    ]);
+``` 
+
+All PHP examples use [GuzzleHttp](http://docs.guzzlephp.org/en/stable/) to create a HTTP client, which is easily installed
+with [Composer like so](http://docs.guzzlephp.org/en/stable/overview.html#installation). The parameters passed to GuzzleHttp 
+in the examples are optional and may of course be adjusted to suite your specific needs.
+
+If you want to use another HTTP Client library than GuzzleHttp, please note that the Golfana Golf Course DB API expects PSR-7 
+compliant messages.
+
+## Shell 
+
+```shell
+curl https://api.stripe.com/v1/charges \
+  -u sk_test_4eC39HqLyjWDarjtT1zdp7dc:
+```
+
+All shell examples use [curl](https://curl.haxx.se/)
 
 # Authentication
 
-> To authorize, use this code:
+The Golfana Golf Course DB API uses access tokens to authenticate requests. You can view and manage your access tokens in the **Golfana Golf Course DB settings**.
 
-```ruby
-require 'kittn'
+Your access tokens carry many privileges, so please keep them secure! Do not share your access tokens in publicly accessible areas such as GitHub, client-side code, and so forth.
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
+Authentication to the API is performed via **bearer authentication** and all API requests must be made over HTTPS. Calls made over plain HTTP will fail. API requests without authentication will also fail.
+
+```php
+<?php
+$headers = ['Authorization' => 'Bearer ' . $apiAccessToken];
+
+$response = $client->request('GET', 'golfclubs/info', ['headers' => $headers]);
 ```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
-
 ```shell
 # With shell, you can just pass the correct header with each request
 curl "api_endpoint_here"
   -H "Authorization: meowmeowmeow"
 ```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-```
-
 > Make sure to replace `meowmeowmeow` with your API key.
 
 Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
