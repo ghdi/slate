@@ -13,7 +13,7 @@ toc_footers:
 includes:
   - errors
 
-search: true
+search: false
 ---
 
 # Introduction
@@ -47,7 +47,7 @@ $client = new \GuzzleHttp\Client(
 ``` 
 
 All PHP examples use [GuzzleHttp](http://docs.guzzlephp.org/en/stable/) to create a HTTP client, which is easily installed
-with [Composer like so](http://docs.guzzlephp.org/en/stable/overview.html#installation). The parameters passed to GuzzleHttp 
+with [Compose](http://docs.guzzlephp.org/en/stable/overview.html#installation). The parameters passed to GuzzleHttp 
 in the examples are optional and may of course be adjusted to suite your specific needs.
 
 If you want to use another HTTP Client library than GuzzleHttp, please note that the Golfana Golf Course DB API expects PSR-7 
@@ -72,6 +72,7 @@ Authentication to the API is performed via **bearer authentication** and all API
 
 ```php
 <?php
+# Make sure to assign either your test or your live access token to $apiAccessToken.
 $headers = ['Authorization' => 'Bearer ' . $apiAccessToken];
 
 $response = $client->request('GET', 'golfclubs/info', ['headers' => $headers]);
@@ -81,19 +82,17 @@ $response = $client->request('GET', 'golfclubs/info', ['headers' => $headers]);
 curl "api_endpoint_here"
   -H "Authorization: meowmeowmeow"
 ```
-> Make sure to replace `meowmeowmeow` with your API key.
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
+# Errors
 
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
+> Error codes:
 
-`Authorization: meowmeowmeow`
+The Golfana Golf Course DB API uses conventional HTTP response codes to indicate the success or failure of an API request. 
+In general: Codes in the 2xx range indicate success. Codes in the 4xx range indicate an error that failed given the 
+information provided (e.g., a required parameter was omitted, the access token was invalid, etc.). Codes in the 5xx 
+range indicate an error with the Golfana servers (these are rare).
 
-<aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
-</aside>
 
-# Kittens
 
 ## Get All Kittens
 
