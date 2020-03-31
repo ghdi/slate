@@ -32,9 +32,7 @@ This API documentation page was created with [Slate](https://github.com/lord/sla
 
 # HTTP Clients
 
-Our examples use the follwoging HTTP clients:
-
-## PHP 
+## PHP HTTP Client
 
 ```php
 <?php
@@ -53,12 +51,7 @@ in the examples are optional and may of course be adjusted to suite your specifi
 If you want to use another HTTP Client library than GuzzleHttp, please note that the Golfana Golf Course DB API expects PSR-7 
 compliant messages.
 
-## Shell 
-
-```shell
-curl https://api.stripe.com/v1/charges \
-  -u sk_test_4eC39HqLyjWDarjtT1zdp7dc:
-```
+## Shell HTTP Client
 
 All shell examples use [curl](https://curl.haxx.se/)
 
@@ -76,11 +69,19 @@ Authentication to the API is performed via **bearer authentication** and all API
 $headers = ['Authorization' => 'Bearer ' . $apiAccessToken];
 
 $response = $client->request('GET', 'golfclubs/info', ['headers' => $headers]);
+
+if ($response->getStatusCode() !== 200)
+{
+  # Do something with the error.
+}
+
+$result = json_decode((string)$response->getBody(), true);
+
+# Do something with the result.
 ```
 ```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
+curl -X GET https://test.golfana.local:444/golfcoursedb/v1/info \
+     -H 'Authorization: Bearer <apiAccessToken>'
 ```
 
 # Errors
@@ -92,7 +93,98 @@ In general: Codes in the 2xx range indicate success. Codes in the 4xx range indi
 information provided (e.g., a required parameter was omitted, the access token was invalid, etc.). Codes in the 5xx 
 range indicate an error with the Golfana servers (these are rare).
 
+# Endpoints
+## info
+Detailed information about the golf course database.
+## countrydata/:countryCode
+```php
+<?php
+$headers = ['Authorization' => 'Bearer ' . $apiAccessToken];
 
+$response = $client->request('GET', 'golfclubs/countrydata/NL', ['headers' => $headers]);
+
+$result = json_decode((string)$response->getBody(), true);
+
+print_r($result);
+/*
+    [
+        'version'       =>  2
+        'timezones'     =>  [
+                                ['timezone` => `America/New_York`],
+                                ['timezone` => `America/Detroit`],
+                                .....
+                            ],
+        'stateCodes'    =>  [
+                                [
+                                    'stateCode'     => 'US-AL',
+                                    'name'          => 'Alabama',
+                                    'type'          => 'state',
+                                    'otherNames'    =>  []
+                                ],
+                                [
+                                    'stateCode'     => 'US-AK',
+                                    'name'          => 'Alaska',
+                                    'type'          => 'state',
+                                    'otherNames'    =>  []
+                                ],
+                                .....
+                            ] 
+    ]
+*/
+```
+
+> The above command returns JSON structured like this:
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Fluffums",
+    "breed": "calico",
+    "fluffiness": 6,
+    "cuteness": 7
+  },
+  {
+    "id": 2,
+    "name": "Max",
+    "breed": "unknown",
+    "fluffiness": 5,
+    "cuteness": 10
+  }
+]
+```
+
+Timezone and subdivision information for a specific country.
+
+The Golfana Golf Course DB contains a stateCode for each golf club.  We have compiled one using various resources, primarily https://www.iso.org/obp/ui/#iso:pub:PUB500001:en
+
+This information is typically used in search filters, for example a search for all golf clubs in Arkansas in the United States.
+It goes without saying that it is important that the state codes you use to search match the ones in the Golfana Golf Course DB.
+
+Please cache the country data on the fly. Each response contains a version number which you can use to determine if your cache
+needs to be updated.
+
+### Query Parameters
+
+Parameter | Description
+--------- | ------- | -----------
+countrycode | The ISO 3166-1 country code for which you want the data.
+
+### Country data
+
+Parameter | Description
+--------- | ------- | -----------
+countrycode | The ISO 3166-1 country code for which you want the data.
+
+ 
+
+
+
+
+
+
+## golfclubs/search
+Search for golf clubs in our database.
 
 ## Get All Kittens
 
